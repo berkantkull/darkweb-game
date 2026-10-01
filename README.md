@@ -2,7 +2,7 @@
 
 Tarayıcıda çalışan, tamamen kurgusal ve kısa bir Dark Web rol yapma oyunu.
 
-🎮 **[Oyunu şimdi oyna](https://berkantkull.github.io/darkweb-game/)**
+**[Oyunu şimdi oyna](https://berkantkull.github.io/darkweb-game/)**
 
 ## Oynama
 
