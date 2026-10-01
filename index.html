@@ -12,6 +12,7 @@
     header{display:flex;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--line);color:var(--dim)}
     .setup-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;align-items:start}.ability-panel{padding:16px;border:1px solid var(--green);background:#061009;box-shadow:0 0 22px #00ff5520}.ability-panel h3{margin-bottom:10px}.ability-panel p{margin:9px 0;font-size:13px}.ability-panel b{color:#fff}
     .address{margin:12px;padding:8px 12px;border:1px solid var(--line);background:#020403}.address span{color:var(--green)}
+    .perk-notice{margin:0 12px 12px;padding:10px 12px;border:1px solid var(--amber);background:#241b08;color:var(--amber);text-align:center}
     main{display:grid;grid-template-columns:220px 1fr;min-height:570px}.side{border-right:1px solid var(--line);padding:14px}.screen{padding:22px;overflow:auto}
     .hidden{display:none!important}h1,h2,h3{font-weight:400;letter-spacing:2px;margin-top:0}p{color:#abc8b2}.muted,.system{color:var(--dim)}.danger{color:var(--red)}
     button,input,select{font:inherit;color:var(--green);background:#07120b;border:1px solid #286b40;padding:9px}button{cursor:pointer}button:hover{background:#11301c}button:disabled{opacity:.35;cursor:not-allowed}
@@ -27,6 +28,7 @@
 <div class="app">
   <header><span>NULL BROWSER v2.0 // KURGUSAL SİMÜLASYON</span><span id="clock">00:00:00</span></header>
   <div class="address">Adres: <span id="url">null://giris</span></div>
+  <div id="perkNotice" class="perk-notice hidden"></div>
   <main>
     <aside class="side">
       <div class="status">KİMLİK <b id="who">Bilinmiyor</b>ÖZEL YETENEK <span id="perkText">Yok</span>SÜRE <b id="timeText">08:00</b>İZ SEVİYESİ <span id="traceText">%0</span><div class="bar"><i id="trace" class="trace"></i></div>GÜVEN <span id="trustText">%50</span><div class="bar"><i id="trust" class="trust"></i></div></div>
@@ -39,7 +41,7 @@
         <div>
           <h1>GÖLGE AĞA BAĞLAN</h1><p>NIGHTFALL dosyasının izini sür. Seçimlerin güven ve iz seviyeni değiştirecek.</p>
           <label>Takma ad</label><input id="alias" maxlength="16" placeholder="ör. Raven">
-          <label>Karakter</label><select id="role"><option>Araştırmacı gazeteci</option><option>Bağımsız dedektif</option><option>Meraklı yazılımcı</option><option>Tarihçi Berkant</option><option>Otelci Akın</option><option>Heçkır Süleyman</option><option>Toptancı Mustafa</option></select>
+          <label>Karakter</label><select id="role"><option>Araştırmacı gazeteci</option><option>Bağımsız dedektif</option><option>Meraklı yazılımcı</option><option>Tarihçi Berkant</option><option>Otelci Akın</option><option>Heçkır Süleyman</option><option>Toptancı Mustafa</option><option>Barmen Ata</option></select>
           <div id="rolePreview" class="msg system">Standart başlangıç.</div><button id="connect">YENİ OTURUM BAŞLAT</button> <button id="continue" class="hidden">KAYITLI OTURUMA DEVAM ET</button>
         </div>
         <aside id="abilityPanel" class="ability-panel">
@@ -48,6 +50,7 @@
           <p><b>Otelci Akın</b><br>Oyuna 2 dakika ek süreyle başlar.</p>
           <p><b>Heçkır Süleyman</b><br>Kazandığı iz puanları yarıya düşer.</p>
           <p><b>Toptancı Mustafa</b><br>Oyuna %65 güvenle başlar.</p>
+          <p><b>Barmen Ata</b><br><b>Son Çağrı:</b> İlk yakalanışında güvenliğe bir içki ısmarlar; iz %70'e düşer.</p>
           <p class="muted">Diğer karakterler standart kurallarla oynar.</p>
         </aside>
       </div>
@@ -72,12 +75,13 @@
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const screens=['setup','hub','messages','missions','mission1','mission2','mission3','finalChoice','end'];
-let state={alias:'',role:'',trace:0,trust:50,time:480,started:false,accepted:false,m1:false,m2:false,m3:false,over:false};let timerId=null;
+let state={alias:'',role:'',trace:0,trust:50,time:480,started:false,accepted:false,m1:false,m2:false,m3:false,perkUsed:false,over:false};let timerId=null;
 const rolePerks={
   'Tarihçi Berkant':'Eski Şifreler: İlk bulmacada ek ipucu ve daha az ceza.',
   'Otelci Akın':'Gece Vardiyası: Oyuna 2 dakika ek süreyle başlar.',
   'Heçkır Süleyman':'Gölge Modu: Kazanılan iz puanları yarıya iner.',
-  'Toptancı Mustafa':'Geniş Çevre: Oyuna %65 güvenle başlar.'
+  'Toptancı Mustafa':'Geniş Çevre: Oyuna %65 güvenle başlar.',
+  'Barmen Ata':'Son Çağrı: İlk yakalanışında güvenliğe bir içki ısmarlar ve izini %70’e düşürür.'
 };
 setInterval(()=>$('#clock').textContent=new Date().toLocaleTimeString('tr-TR'),1000);
 function show(id,url){if(state.over&&id!=='end')return;screens.forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));$('#url').textContent=url}
@@ -90,13 +94,13 @@ function render(){
   $('#introChoices').classList.toggle('hidden',state.accepted);['hubBtn','messagesBtn','missionsBtn'].forEach(id=>$('#'+id).disabled=!state.started);$('#resetBtn').classList.toggle('hidden',!state.started);save();
 }
 function finish(title,text,url){state.over=true;clearInterval(timerId);localStorage.removeItem('nullGameV2');$('#endTitle').textContent=title;$('#endText').innerHTML=text;show('end',url)}
-function changeTrace(n){const gain=state.role==='Heçkır Süleyman'?Math.ceil(n/2):n;state.trace=Math.min(100,state.trace+gain);render();if(state.trace>=90){finish('YAKALANDIN','İz seviyen %90’a ulaştı. Bağlantın tespit edildi ve görev başarısız oldu.','null://erisim/yakalandi');return true}return false}
+function changeTrace(n){const gain=state.role==='Heçkır Süleyman'?Math.ceil(n/2):n;state.trace=Math.min(100,state.trace+gain);if(state.trace>=90&&state.role==='Barmen Ata'&&!state.perkUsed){state.perkUsed=true;state.trace=70;render();$('#perkNotice').textContent='🍸 SON ÇAĞRI! Barmen Ata güvenliğe bir içki ısmarladı. İz seviyesi %70’e düştü.';$('#perkNotice').classList.remove('hidden');setTimeout(()=>$('#perkNotice').classList.add('hidden'),4500);return false}render();if(state.trace>=90){finish('YAKALANDIN','İz seviyen %90’a ulaştı. Bağlantın tespit edildi ve görev başarısız oldu.','null://erisim/yakalandi');return true}return false}
 function changeTrust(n){state.trust=Math.max(0,Math.min(100,state.trust+n));render()}
 function startTimer(){clearInterval(timerId);timerId=setInterval(()=>{state.time--;render();if(state.time<=0)finish('SÜRE DOLDU','Sunucu kapandı. NIGHTFALL karanlıkta kaldı.','null://sunucu/kapali')},1000)}
 function enterGame(){render();startTimer();show(state.accepted?'hub':'messages',state.accepted?'null://merkez':'null://posta/kutu-17')}
-function epilogue(){return {'Tarihçi Berkant':'Tarihçi Berkant, kayıp kayıtları şehir arşivine geri kazandırdı.','Otelci Akın':'Otelci Akın, son misafir kaydının sırrını sonunda çözdü.','Heçkır Süleyman':'Heçkır Süleyman, sistemden geriye tek bir dijital iz bırakmadı.','Toptancı Mustafa':'Toptancı Mustafa, bağlantılarını kullanarak haberi bütün şehre ulaştırdı.'}[state.role]||state.role+' görevini tamamladı.'}
+function epilogue(){return {'Tarihçi Berkant':'Tarihçi Berkant, kayıp kayıtları şehir arşivine geri kazandırdı.','Otelci Akın':'Otelci Akın, son misafir kaydının sırrını sonunda çözdü.','Heçkır Süleyman':'Heçkır Süleyman, sistemden geriye tek bir dijital iz bırakmadı.','Toptancı Mustafa':'Toptancı Mustafa, bağlantılarını kullanarak haberi bütün şehre ulaştırdı.','Barmen Ata':'Barmen Ata geceyi son bir kadehle kapattı: “Bu da benden.”'}[state.role]||state.role+' görevini tamamladı.'}
 $('#role').onchange=()=>$('#rolePreview').textContent=rolePerks[$('#role').value]||'Standart başlangıç.';
-$('#connect').onclick=()=>{state.alias=$('#alias').value.trim()||'İsimsiz';state.role=$('#role').value;if(state.role==='Otelci Akın')state.time=600;if(state.role==='Toptancı Mustafa')state.trust=65;state.started=true;$('.aliasOut').textContent=state.alias;$('#roleLine').textContent={"Araştırmacı gazeteci":"Kaynaklarını korumayı bildiğini duydum, gazeteci.","Bağımsız dedektif":"İz sürmekte iyi olduğunu söylediler, dedektif.","Meraklı yazılımcı":"Kodların arasındaki ayrıntıyı görebileceğini umuyorum.","Tarihçi Berkant":"Eski şehir kayıtlarını senden iyi okuyabilecek kimse yok, Berkant.","Otelci Akın":"Kayıp kişinin son görüldüğü otelin kayıtları sende, Akın.","Heçkır Süleyman":"Bu sistemin açıklarını yalnız sen fark edebilirsin, Süleyman.","Toptancı Mustafa":"Şehre giren gizli sevkiyatların izini sen biliyorsun, Mustafa."}[state.role];enterGame()};
+$('#connect').onclick=()=>{state.alias=$('#alias').value.trim()||'İsimsiz';state.role=$('#role').value;if(state.role==='Otelci Akın')state.time=600;if(state.role==='Toptancı Mustafa')state.trust=65;state.started=true;$('.aliasOut').textContent=state.alias;$('#roleLine').textContent={"Araştırmacı gazeteci":"Kaynaklarını korumayı bildiğini duydum, gazeteci.","Bağımsız dedektif":"İz sürmekte iyi olduğunu söylediler, dedektif.","Meraklı yazılımcı":"Kodların arasındaki ayrıntıyı görebileceğini umuyorum.","Tarihçi Berkant":"Eski şehir kayıtlarını senden iyi okuyabilecek kimse yok, Berkant.","Otelci Akın":"Kayıp kişinin son görüldüğü otelin kayıtları sende, Akın.","Heçkır Süleyman":"Bu sistemin açıklarını yalnız sen fark edebilirsin, Süleyman.","Toptancı Mustafa":"Şehre giren gizli sevkiyatların izini sen biliyorsun, Mustafa.","Barmen Ata":"Bu ağda herkes konuşur. Doğru içkiyi doğru kişiye vermeyi biliyorsan tabii, Ata."}[state.role];enterGame()};
 $('#continue').onclick=()=>{state=JSON.parse(localStorage.getItem('nullGameV2'));$('.aliasOut').textContent=state.alias;$('#roleLine').textContent='Kayıtlı şifreli oturum yeniden kuruldu.';enterGame()};
 $('#accept').onclick=()=>{state.accepted=true;changeTrust(10);$('#introChoices').classList.add('hidden');$('#reply').classList.remove('hidden');$('#reply').innerHTML='<b>ghost_17:</b> Güzel. Görev panosu açıldı.';render()};
 $('#question').onclick=()=>{changeTrust(-25);if(changeTrace(5))return;$('#question').disabled=true;$('#reply').classList.remove('hidden');$('#reply').innerHTML='<b>ghost_17:</b> Güvenme. Kanıtı kendin bul.'};
