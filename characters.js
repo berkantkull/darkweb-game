@@ -99,7 +99,7 @@ window.GAME_CHARACTERS = [
     }
   },
   {
-    id: "activist", name: "Eylemci Alkım", icon: "✊", abilityName: "Dayanışma Ağı",
+    id: "activist", name: "Eylemci Alkım", icon: "⚑", abilityName: "Dayanışma Ağı",
     abilityText: "Tamamladığı her görevden sonra iz seviyesi %5 azalır.",
     intro: "Tek başına iz bırakmak kolaydır, Alkım. Kalabalıkta ise herkes birbirinin gölgesidir.",
     endings: {
