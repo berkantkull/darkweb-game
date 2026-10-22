@@ -2,165 +2,115 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>NULL:// Gölge Ağ V5</title>
-  <style>
-    :root{--bg:#030604;--line:#17472a;--green:#62ff96;--dim:#71947b;--red:#ff5964;--amber:#ffc857}
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 0,#112719,var(--bg) 55%);color:var(--green);font:14px/1.55 Consolas,monospace}
-    body:after{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 3px,#0003 4px)}
-    .app{width:min(1050px,96vw);margin:22px auto;border:1px solid var(--line);background:#040806ee;box-shadow:0 0 38px #00ff5530}
-    header{display:flex;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--line);color:var(--dim)}
-    .setup-grid{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;align-items:start}.ability-panel{padding:16px;border:1px solid var(--green);background:#061009;box-shadow:0 0 22px #00ff5520}.ability-panel h3{margin-bottom:10px}.ability-panel p{margin:9px 0;font-size:13px}.ability-panel b{color:#fff}
-    .address{margin:12px;padding:8px 12px;border:1px solid var(--line);background:#020403}.address span{color:var(--green)}
-    .perk-notice{margin:0 12px 12px;padding:10px 12px;border:1px solid var(--amber);background:#241b08;color:var(--amber);text-align:center}
-    main{display:grid;grid-template-columns:220px 1fr;min-height:570px}.side{border-right:1px solid var(--line);padding:14px}.screen{padding:22px;overflow:auto}
-    .hidden{display:none!important}h1,h2,h3{font-weight:400;letter-spacing:2px;margin-top:0}p{color:#abc8b2}.muted,.system{color:var(--dim)}.danger{color:var(--red)}
-    button,input,select{font:inherit;color:var(--green);background:#07120b;border:1px solid #286b40;padding:9px}button{cursor:pointer}button:hover{background:#11301c}button:disabled{opacity:.35;cursor:not-allowed}
-    input,select{width:100%;margin:7px 0 14px}.nav button{display:block;width:100%;margin:6px 0;text-align:left}.status{display:grid;gap:7px;color:var(--dim)}
-    .bar{height:8px;border:1px solid var(--line)}.bar i{display:block;height:100%;transition:.35s}.trace{background:var(--red);width:0}.trust{background:var(--green);width:50%}
-    .msg{border-left:2px solid var(--line);padding:9px 12px;margin:10px 0;background:#07100a}.msg b{color:#fff}.choices{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
-    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.card{border:1px solid var(--line);padding:15px;background:#061009}.card h3{font-size:14px}.card.done{border-color:#4cbf72}.tag{display:inline-block;padding:2px 7px;border:1px solid var(--line);color:var(--dim);font-size:12px}.tool-output{min-height:42px;padding:10px;border:1px dashed var(--line);color:#fff}.inline-tool{margin:14px 0;padding:14px;border:1px solid var(--line);background:#040b07}.cable-wrap{max-width:520px;margin:12px auto;text-align:center}.level-dots{display:flex;justify-content:center;gap:8px;margin:10px}.level-dots i{width:34px;height:7px;border:1px solid var(--line)}.level-dots i.active{background:var(--amber)}.level-dots i.done{background:var(--green)}#cableCanvas{display:block;width:100%;aspect-ratio:1;border:1px solid var(--line);background:#020503;touch-action:none}.arrow-pad{display:grid;grid-template-columns:repeat(3,60px);justify-content:center;gap:6px;margin:12px auto}.arrow-pad button{font-size:20px}.arrow-pad .up{grid-column:2}.arrow-pad .left{grid-column:1}.arrow-pad .down{grid-column:2}.arrow-pad .right{grid-column:3}
-    .log{display:block;width:100%;text-align:left;margin:8px 0}.item{display:inline-block;border:1px solid var(--line);padding:8px;margin:5px;background:#07150c}.ending{border:1px solid var(--green);padding:20px;background:#07150c}
-    @media(max-width:720px){body{font-size:13px}.app{width:100%;min-height:100vh;margin:0;border-left:0;border-right:0}header{gap:12px;padding:10px;font-size:11px}.address{margin:8px}main{grid-template-columns:1fr;min-height:0}.side{border:0;border-bottom:1px solid var(--line);padding:10px}.nav{display:flex;gap:6px;overflow-x:auto}.nav button{width:auto;min-width:max-content;margin:0}.screen{padding:16px}.setup-grid,.grid{grid-template-columns:1fr}.ability-panel{order:2}.choices{flex-direction:column}.choices button,.screen>div>button{width:100%}button,input,select{font-size:16px}.log{font-size:13px}}
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07110f">
+  <meta name="description" content="Gölge Ağ — tarayıcıda oynanan kurgusal terminal macerası.">
+  <title>Gölge Ağ // V6</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="characters.js" defer></script>
+  <script src="missions.js" defer></script>
+  <script src="game.js" defer></script>
 </head>
 <body>
-<div class="app">
-  <header><span>NULL BROWSER v5.0 // KURGUSAL SİMÜLASYON</span><span id="clock">00:00:00</span></header>
-  <div class="address">Adres: <span id="url">null://giris</span></div>
-  <div id="perkNotice" class="perk-notice hidden"></div>
-  <main>
-    <aside class="side">
-      <div class="status">KİMLİK <b id="who">Bilinmiyor</b>ÖZEL YETENEK <span id="perkText">Yok</span>SÜRE <b id="timeText">12:00</b>İZ SEVİYESİ <span id="traceText">%0</span><div class="bar"><i id="trace" class="trace"></i></div>GÜVEN <span id="trustText">%50</span><div class="bar"><i id="trust" class="trust"></i></div></div>
-      <hr style="border-color:#17472a;margin:16px 0">
-      <div class="nav"><button id="hubBtn" disabled>▸ Ana Merkez</button><button id="messagesBtn" disabled>▸ Mesajlar</button><button id="activeMissionBtn" disabled>▸ Aktif Görev</button></div>
-      <button id="resetBtn" class="hidden" style="margin-top:20px;width:100%">Kaydı sıfırla</button>
-    </aside>
-    <section class="screen">
-      <div id="setup" class="setup-grid">
-        <div>
-          <h1>GÖLGE AĞA BAĞLAN</h1><p>NIGHTFALL dosyasının izini sür. Seçimlerin güven ve iz seviyeni değiştirecek.</p>
-          <label>Takma ad</label><input id="alias" maxlength="16" placeholder="ör. Raven">
-          <label>Karakter</label><select id="role"><option>Araştırmacı gazeteci</option><option>Bağımsız dedektif</option><option>Meraklı yazılımcı</option><option>Tarihçi Berkant</option><option>Otelci Akın</option><option>Heçkır Süleyman</option><option>Toptancı Mustafa</option><option>Barmen Ata</option><option>Coğrafyacı Ömer</option><option>Eylemci Alkım</option></select>
-          <div id="rolePreview" class="msg system">Standart başlangıç.</div><button id="connect">YENİ OTURUM BAŞLAT</button> <button id="continue" class="hidden">KAYITLI OTURUMA DEVAM ET</button>
-        </div>
-        <aside id="abilityPanel" class="ability-panel">
-          <h3>KARAKTER YETENEKLERİ</h3>
-          <p><b>Tarihçi Berkant</b><br>Ek şifre ipucu ve daha düşük yanlış cevap cezası.</p>
-          <p><b>Otelci Akın</b><br>Oyuna 2 dakika ek süreyle başlar.</p>
-          <p><b>Heçkır Süleyman</b><br>Kazandığı iz puanları yarıya düşer.</p>
-          <p><b>Toptancı Mustafa</b><br>Oyuna %65 güvenle başlar.</p>
-          <p><b>Barmen Ata</b><br><b>Son Çağrı:</b> İlk yakalanışında güvenliğe bir içki ısmarlar; iz %70'e düşer.</p>
-          <p><b>Coğrafyacı Ömer</b><br><b>Kestirme Rota:</b> Kayıp Kayıt görevindeki ilk yanlış rota seçimi cezasızdır.</p>
-          <p><b>Eylemci Alkım</b><br><b>Dayanışma Ağı:</b> Tamamladığı her görevden sonra iz seviyesi %5 azalır.</p>
-          <p class="muted">Diğer karakterler standart kurallarla oynar.</p>
-        </aside>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Gölge Ağ başlangıç">
+        <span class="brand-mark">N</span>
+        <span><strong>GÖLGE AĞ</strong><small>NULL BROWSER // V6</small></span>
+      </a>
+
+      <div id="missionBadge" class="mission-badge hidden" aria-live="polite">
+        <span id="missionCounter">01 / 05</span>
+        <strong id="missionBadgeTitle">Gölgede Üç Adım</strong>
       </div>
 
-      <div id="hub" class="hidden"><h2>ANA MERKEZ</h2><p>Bağlantı etkin. Oyun seni görevler arasında otomatik ilerletir.</p><div class="grid"><div class="card" id="card1"><span class="tag">GÖREV 01</span><h3>GÖLGEDE ÜÇ ADIM</h3><p>Türk alfabesi şifresi.</p></div><div class="card" id="card2"><span class="tag">GÖREV 02</span><h3>KIRIK SİNYAL</h3><p>Binary ve Hex zinciri.</p></div><div class="card" id="card3"><span class="tag">GÖREV 03</span><h3>KAYIP KAYIT</h3><p>Doğru bağlantı kaydı.</p></div><div class="card" id="card4"><span class="tag">GÖREV 04</span><h3>KOPUK HAT</h3><p>Kablo bağlantı bulmacası.</p></div><div class="card" id="card5"><span class="tag">GÖREV 05</span><h3>SOĞUK ARŞİV</h3><p>Gerçek dosyayı seç.</p></div></div><div id="hubNotice" class="msg system">Yeni mesaj bekleniyor...</div><button id="continueMission">AKTİF GÖREVE DÖN</button></div>
+      <div class="top-actions">
+        <button id="settingsButton" class="icon-button" type="button" aria-label="Ayarları aç">⚙</button>
+        <span id="clock" class="clock">00:00:00</span>
+      </div>
+    </header>
 
-      <div id="messages" class="hidden"><h2>ŞİFRELİ MESAJLAR</h2><div class="msg"><b>ghost_17:</b> Geldin demek, <span class="aliasOut"></span>. NIGHTFALL isimli silinmiş bir şehir arşivini arıyorum.</div><div id="roleLine" class="msg system"></div><div class="msg"><b>ghost_17:</b> Yardım edersen dört güvenlik katmanını aşacağız. Her çözülen şifre bir sonraki aracı açacak.</div><div id="introChoices" class="choices"><button id="accept">Görevi kabul et</button><button id="question">“Sana neden güveneyim?”</button></div><div id="reply" class="msg hidden"></div></div>
-
-      <div id="mission1" class="hidden"><h2>01 // GÖLGEDE ÜÇ ADIM</h2><div class="msg">Şifreli metin: <b>PKIJVHÇOO</b></div><p>Her harfi Türk alfabesinde 3 sıra geriye kaydır. I ve İ farklı harflerdir.</p><p class="system">A B C Ç D E F G Ğ H I İ J K L M N O Ö P R S Ş T U Ü V Y Z</p><input id="cipherAnswer" placeholder="ERİŞİM ANAHTARI"><button id="solveM1">DOĞRULA</button><p id="m1feedback"></p></div>
-
-      <div id="mission2" class="hidden"><h2>02 // KIRIK SİNYAL</h2><div class="msg"><b>Binary sinyal:</b><br>01001000 01000101 01011000</div><p>Her 8 haneli grup bir ASCII harfidir. Kodu aşağıdaki araca yapıştır.</p><div class="inline-tool"><h3>BINARY → METİN</h3><input id="binaryInput" value="01001000 01000101 01011000"><button id="decodeBinary">BINARY ÇÖZ</button><p id="binaryOutput" class="tool-output">Sonuç burada görünecek.</p></div><div id="hexStage" class="inline-tool hidden"><h3>İKİNCİ KATMAN // HEX → METİN</h3><div class="msg">4B 41 50 49</div><input id="hexInput" value="4B 41 50 49"><button id="decodeHex">HEX ÇÖZ VE DEVAM ET</button><p id="hexOutput" class="tool-output">Sonuç burada görünecek.</p></div><p id="m2feedback"></p></div>
-
-      <div id="mission3" class="hidden"><h2>03 // KAYIP KAYIT</h2><div class="msg"><b>ghost_17:</b> Aradığımız bağlantı tam <b>02:17</b>'de gerçekleşti. Çıkış düğümünün sonu <b>.44</b> idi.</div><p>Doğru sistem kaydını seç:</p><button class="log" data-correct="0">[02:12] NODE 185.77.12.44 // REDDEDİLDİ</button><button class="log" data-correct="0">[02:17] NODE 91.204.18.73 // KABUL</button><button class="log" data-correct="1">[02:17] NODE 185.77.12.44 // KABUL</button><p id="m3feedback"></p></div>
-
-      <div id="mission4" class="hidden"><h2>04 // KOPUK HAT</h2><div class="msg">Üç hattı sırayla onar. Yeşil kablo ucunu sarı bağlantı noktasına götür; kırmızı devrelere dokunma.</div><p>Bilgisayar: yön tuşları · Telefon: oyun alanında parmağını kaydır.</p><div class="cable-wrap"><b id="cableLevelText">SEVİYE 1 / 3</b><div class="level-dots"><i id="levelDot1" class="active"></i><i id="levelDot2"></i><i id="levelDot3"></i></div><canvas id="cableCanvas" width="600" height="600"></canvas><div class="arrow-pad"><button class="up" data-move="up">▲</button><button class="left" data-move="left">◀</button><button class="down" data-move="down">▼</button><button class="right" data-move="right">▶</button></div><button id="resetCable">BU SEVİYEYİ SIFIRLA</button></div><p id="m4feedback"></p></div>
-
-      <div id="mission5" class="hidden"><h2>05 // SOĞUK ARŞİV</h2><div class="msg">Erişim sağlandı. Görev adıyla aynı olan veri dosyasını seç. Çalıştırılabilir dosyalardan uzak dur.</div><div class="choices"><button class="file" data-file="wrong">1987.LOG</button><button class="file" data-file="right">NIGHTFALL.dat</button><button class="file" data-file="wrong">MIRROR.exe</button></div><p id="m5feedback"></p></div>
-
-      <div id="finalChoice" class="hidden"><h2>NIGHTFALL // SON KARAR</h2><div class="msg">Dosya, şehirde kaybolan insanların gizli listesini içeriyor. Bu bilgiyle ne yapacaksın?</div><div class="choices"><button id="publish">Halka açıkla</button><button id="sendGhost">ghost_17'ye gönder</button><button id="erase">Dosyayı sil</button></div></div>
-      <div id="end" class="hidden ending"><h2 id="endTitle"></h2><p id="endText"></p><button onclick="localStorage.removeItem('nullGameV5');location.reload()">YENİDEN OYNA</button></div>
+    <section id="hud" class="hud hidden" aria-label="Oyuncu durumu">
+      <div class="hud-identity"><span id="hudAvatar">◈</span><div><small>KİMLİK</small><strong id="hudIdentity">Bilinmiyor</strong></div></div>
+      <div class="hud-stat"><div><small>SÜRE</small><strong id="timeText">12:00</strong></div><div class="meter neutral"><i id="timeBar"></i></div></div>
+      <div class="hud-stat"><div><small>İZ</small><strong id="traceText">%0</strong></div><div class="meter danger"><i id="traceBar"></i></div></div>
+      <div class="hud-stat"><div><small>GÜVEN</small><strong id="trustText">%50</strong></div><div class="meter safe"><i id="trustBar"></i></div></div>
     </section>
-  </main>
-</div>
-<script>
-const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const screens=['setup','hub','messages','mission1','mission2','mission3','mission4','mission5','finalChoice','end'];
-let state={alias:'',role:'',trace:0,trust:50,time:720,started:false,accepted:false,m1:false,m2:false,m3:false,m4:false,m5:false,binarySolved:false,cableLevel:1,cableX:0,cableY:2,cablePath:[[0,2]],perkUsed:false,over:false};let timerId=null;
-const rolePerks={
-  'Tarihçi Berkant':'Eski Şifreler: İlk bulmacada ek ipucu ve daha az ceza.',
-  'Otelci Akın':'Gece Vardiyası: Oyuna 2 dakika ek süreyle başlar.',
-  'Heçkır Süleyman':'Gölge Modu: Kazanılan iz puanları yarıya iner.',
-  'Toptancı Mustafa':'Geniş Çevre: Oyuna %65 güvenle başlar.',
-  'Barmen Ata':'Son Çağrı: İlk yakalanışında güvenliğe bir içki ısmarlar ve izini %70’e düşürür.',
-  'Coğrafyacı Ömer':'Kestirme Rota: Kayıp Kayıt görevindeki ilk yanlış rota seçimi iz puanı vermez.',
-  'Eylemci Alkım':'Dayanışma Ağı: Tamamlanan her görevden sonra iz seviyesini %5 azaltır.'
-};
-setInterval(()=>$('#clock').textContent=new Date().toLocaleTimeString('tr-TR'),1000);
-function show(id,url){if(state.over&&id!=='end')return;screens.forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));$('#url').textContent=url;if(id==='mission4')requestAnimationFrame(drawCable)}
-function save(){if(state.started&&!state.over)localStorage.setItem('nullGameV5',JSON.stringify(state))}
-function render(){
-  $('#who').textContent=state.alias?(state.alias+' / '+state.role):'Bilinmiyor';$('#perkText').textContent=rolePerks[state.role]||'Standart';$('#traceText').textContent='%'+state.trace;$('#trace').style.width=state.trace+'%';$('#trustText').textContent='%'+state.trust;$('#trust').style.width=state.trust+'%';
-  const m=String(Math.floor(state.time/60)).padStart(2,'0'),s=String(state.time%60).padStart(2,'0');$('#timeText').textContent=m+':'+s;$('#timeText').classList.toggle('danger',state.time<=60);
-  $('#card1').classList.toggle('done',state.m1);$('#card2').classList.toggle('done',state.m2);$('#card3').classList.toggle('done',state.m3);$('#card4').classList.toggle('done',state.m4);$('#card5').classList.toggle('done',state.m5);$('#hubNotice').textContent=state.m5?'NIGHTFALL bulundu. Son karar seni bekliyor.':state.m4?'Soğuk arşiv açıldı.':state.m3?'Kopuk hattı onar.':state.m2?'Doğru bağlantı kaydını bul.':state.m1?'Kırık Binary sinyalini çöz.':'İlk görev erişim anahtarını çözmek.';
-  $('#hexStage').classList.toggle('hidden',!state.binarySolved);$('#introChoices').classList.toggle('hidden',state.accepted);['hubBtn','messagesBtn','activeMissionBtn'].forEach(id=>$('#'+id).disabled=!state.started);$('#resetBtn').classList.toggle('hidden',!state.started);save();
-}
-function finish(title,text,url){state.over=true;clearInterval(timerId);localStorage.removeItem('nullGameV5');$('#endTitle').textContent=title;$('#endText').innerHTML=text;show('end',url)}
-function changeTrace(n){const gain=state.role==='Heçkır Süleyman'?Math.ceil(n/2):n;state.trace=Math.min(100,state.trace+gain);if(state.trace>=90&&state.role==='Barmen Ata'&&!state.perkUsed){state.perkUsed=true;state.trace=70;render();$('#perkNotice').textContent='🍸 SON ÇAĞRI! Barmen Ata güvenliğe bir içki ısmarladı. İz seviyesi %70’e düştü.';$('#perkNotice').classList.remove('hidden');setTimeout(()=>$('#perkNotice').classList.add('hidden'),4500);return false}render();if(state.trace>=90){finish('YAKALANDIN','İz seviyen %90’a ulaştı. Bağlantın tespit edildi ve görev başarısız oldu.','null://erisim/yakalandi');return true}return false}
-function changeTrust(n){state.trust=Math.max(0,Math.min(100,state.trust+n));render()}
-function activistRelief(){if(state.role!=='Eylemci Alkım')return;state.trace=Math.max(0,state.trace-5);render();$('#perkNotice').textContent='✊ DAYANIŞMA AĞI! Alkım kalabalığa karıştı. İz seviyesi %5 azaldı.';$('#perkNotice').classList.remove('hidden');setTimeout(()=>$('#perkNotice').classList.add('hidden'),3500)}
-function startTimer(){clearInterval(timerId);timerId=setInterval(()=>{state.time--;render();if(state.time<=0)finish('SÜRE DOLDU','Sunucu kapandı. NIGHTFALL karanlıkta kaldı.','null://sunucu/kapali')},1000)}
-function enterGame(){render();startTimer();show(state.accepted?'hub':'messages',state.accepted?'null://merkez':'null://posta/kutu-17')}
-function openActiveMission(){if(!state.accepted)return show('messages','null://posta');if(!state.m1)return show('mission1','null://gorev/01');if(!state.m2)return show('mission2','null://gorev/02');if(!state.m3)return show('mission3','null://gorev/03');if(!state.m4)return show('mission4','null://gorev/04');if(!state.m5)return show('mission5','null://gorev/05');show('finalChoice','null://nightfall/karar')}
-const roleEndings={
-  'Araştırmacı gazeteci':{publish:'Dosya ertesi sabah manşete çıktı; kayıp insanların isimleri artık susturulamazdı.',ghost:'ghost_17 yeni kaynağın oldu ve ikiniz gölgelerdeki dosyaları yayımlamaya devam ettiniz.',betray:'Sahte kaynağa güvendin; haberin ve mesleki itibarın aynı gece çöktü.',erase:'Hayatının en büyük haberini kendi ellerinle sildin; boş sayfa yıllarca peşini bırakmadı.'},
-  'Bağımsız dedektif':{publish:'NIGHTFALL yıllardır kapanmayan bütün dosyaları birbirine bağladı ve şehir yeniden soruşturma başlattı.',ghost:'ghost_17 ile görünmeyen bir dedektif bürosu kurdun; ilk ortak dosyanız NIGHTFALL oldu.',betray:'Teslim ettiğin kanıt değiştirildi ve bütün şüpheler senin üzerine çevrildi.',erase:'Dosyayı kapattın ama vaka zihninde sonsuza dek açık kaldı.'},
-  'Meraklı yazılımcı':{publish:'Dosyayı birçok aynaya dağıttın; tek bir düğme artık gerçeği silemezdi.',ghost:'ghost_17 ile güvenli bir arşiv kurdun ve kayıp kayıtları tek tek geri getirdin.',betray:'ghost_17 hesabını kilitledi; ekranda yalnızca yanıp sönen bir imleç kaldı.',erase:'Son kopyayı da temizledin ve terminal sessizliğe gömüldü.'},
-  'Tarihçi Berkant':{publish:'Berkant kayıp isimleri şehir tarihine yeniden yazdı; silinen geçmiş geri döndü.',ghost:'Berkant ve ghost_17 yasaklı arşivin yeni koruyucuları oldu.',betray:'Sahte belgeler gerçek kayıtların yerini aldı; Berkant tarihin yeniden yazılışını izledi.',erase:'Berkant arşivde boş bir sayfa bıraktı; NIGHTFALL yalnızca bir efsaneye dönüştü.'},
-  'Otelci Akın':{publish:'Akın eski konuk defterlerini açtı; kayıp insanların son geceleri sonunda aydınlandı.',ghost:'Akın otelin kullanılmayan odasını gizli tanıklar için güvenli bir yere çevirdi.',betray:'Misafir kayıtların ağa sızdı ve otelin kapısına o gece kilit vuruldu.',erase:'Akın defteri kapattı; 317 numaralı oda bir daha hiç açılmadı.'},
-  'Heçkır Süleyman':{publish:'Süleyman dosyayı yüzlerce gölge sunucuya dağıttı; gerçek ağın her köşesinde belirdi.',ghost:'Süleyman ile ghost_17 sistemi içeriden söküp kayıp kayıtları kurtardı.',betray:'Tuzak bağlantı Süleyman’ın dijital kimliğini bütün ağa kazıdı.',erase:'Süleyman bütün izleri sildi; NIGHTFALL sanki hiç var olmamıştı.'},
-  'Toptancı Mustafa':{publish:'Mustafa haberi bağlantılarıyla bütün şehre dağıttı; gerçek bir gecede her dükkâna ulaştı.',ghost:'Mustafa gizli sevkiyat ağını kayıp insanları koruyan bir hatta dönüştürdü.',betray:'Bağlantı listen ele geçirildi; güvendiğin herkes aynı anda sustu.',erase:'Mustafa bütün kopyaları topladı ve son paketi kendi elleriyle yaktı.'},
-  'Barmen Ata':{publish:'Ata dosyayı barın ekranında açtı; sabaha kadar herkes aynı gerçeği konuştu.',ghost:'Ata gece yarısı ghost_17 ile buluştu; yeni sırları dinlemek için bir sandalye hep boş kaldı.',betray:'Son içki ghost_17’dendi; Ata uyandığında dosya da kasa da boştu.',erase:'Ata dosyayı sildi ve bardağı tezgâha bıraktı: “Bazı sırlar içeride kalır.”'},
-  'Coğrafyacı Ömer':{publish:'Ömer bütün kayıp noktaları tek haritada birleştirdi; şehir gerçeğin rotasını gördü.',ghost:'Ömer ghost_17’ye görünmeyen yolları gösterdi ve ikisi kayıpların izini sürmeye devam etti.',betray:'Gönderdiğin konum tersine çevrildi; haritada hedef olarak işaretlenen kişi sen oldun.',erase:'Ömer son koordinatı da sildi; NIGHTFALL haritada bulunmayan bir yere dönüştü.'},
-  'Eylemci Alkım':{publish:'Alkım dosyayı meydandaki kalabalığa ulaştırdı; NIGHTFALL binlerce kişinin ortak sesi oldu.',ghost:'Alkım ile ghost_17 gizli bir dayanışma ağı kurdu; kayıpların aileleri artık yalnız değildi.',betray:'Buluşma noktası tuzaktı; kalabalık dağıtıldı ve Alkım ağın yeni hedefi oldu.',erase:'Alkım dosyayı sildi ama meydandaki sessizliğin yükünü üzerinden hiç atamadı.'}
-};
-function endingFor(type){return (roleEndings[state.role]&&roleEndings[state.role][type])||state.role+' bu geceden sonra gölgelerin arasında kayboldu.'}
-$('#role').onchange=()=>$('#rolePreview').textContent=rolePerks[$('#role').value]||'Standart başlangıç.';
-$('#connect').onclick=()=>{state.alias=$('#alias').value.trim()||'İsimsiz';state.role=$('#role').value;if(state.role==='Otelci Akın')state.time=840;if(state.role==='Toptancı Mustafa')state.trust=65;state.started=true;$('.aliasOut').textContent=state.alias;$('#roleLine').textContent={"Araştırmacı gazeteci":"Kaynaklarını korumayı bildiğini duydum, gazeteci.","Bağımsız dedektif":"İz sürmekte iyi olduğunu söylediler, dedektif.","Meraklı yazılımcı":"Kodların arasındaki ayrıntıyı görebileceğini umuyorum.","Tarihçi Berkant":"Eski şehir kayıtlarını senden iyi okuyabilecek kimse yok, Berkant.","Otelci Akın":"Kayıp kişinin son görüldüğü otelin kayıtları sende, Akın.","Heçkır Süleyman":"Bu sistemin açıklarını yalnız sen fark edebilirsin, Süleyman.","Toptancı Mustafa":"Şehre giren gizli sevkiyatların izini sen biliyorsun, Mustafa.","Barmen Ata":"Bu ağda herkes konuşur. Doğru içkiyi doğru kişiye vermeyi biliyorsan tabii, Ata.","Coğrafyacı Ömer":"Ağ düğümleri de şehirler gibidir, Ömer. Doğru rotayı bulan kaybolmaz.","Eylemci Alkım":"Tek başına iz bırakmak kolaydır, Alkım. Kalabalıkta ise herkes birbirinin gölgesidir."}[state.role];enterGame()};
-$('#continue').onclick=()=>{state=JSON.parse(localStorage.getItem('nullGameV5'));$('.aliasOut').textContent=state.alias;$('#roleLine').textContent='Kayıtlı şifreli oturum yeniden kuruldu.';enterGame()};
-$('#accept').onclick=()=>{state.accepted=true;changeTrust(10);$('#introChoices').classList.add('hidden');$('#reply').classList.remove('hidden');$('#reply').innerHTML='<b>ghost_17:</b> Güzel. İlk şifreyi çözerek başla.';render();setTimeout(openActiveMission,700)};
-$('#question').onclick=()=>{changeTrust(-25);if(changeTrace(5))return;$('#question').disabled=true;$('#reply').classList.remove('hidden');$('#reply').innerHTML='<b>ghost_17:</b> Güvenme. Kanıtı kendin bul.'};
-$('#hubBtn').onclick=()=>show('hub','null://merkez');$('#messagesBtn').onclick=()=>show('messages','null://posta');$('#activeMissionBtn').onclick=openActiveMission;$('#continueMission').onclick=openActiveMission;$('#resetBtn').onclick=()=>{localStorage.removeItem('nullGameV5');location.reload()};
-$('#solveM1').onclick=()=>{const a=$('#cipherAnswer').value.trim().toLocaleUpperCase('tr-TR');if(a==='NIGHTFALL'){state.m1=true;changeTrust(8);if(changeTrace(10))return;activistRelief();$('#m1feedback').textContent='ANAHTAR DOĞRU — Kırık Sinyal açıldı.';render();setTimeout(()=>show('mission2','null://gorev/02'),900)}else{if(changeTrace(state.role==='Tarihçi Berkant'?8:18))return;$('#m1feedback').innerHTML=state.role==='Tarihçi Berkant'?'<span class="danger">Yanlış. Tarihçi ipucu: P harfinden 3 geri gidince N gelir.</span>':'<span class="danger">Hatalı anahtar. İz seviyesi yükseldi.</span>'}};
-$('#decodeBinary').onclick=()=>{const groups=$('#binaryInput').value.trim().split(/\s+/);if(!groups.length||groups.some(x=>!/^\d{8}$/.test(x)||/[^01]/.test(x))){$('#binaryOutput').innerHTML='<span class="danger">Her grup 8 adet 0 veya 1 içermeli.</span>';return}const result=groups.map(x=>String.fromCharCode(parseInt(x,2))).join('');$('#binaryOutput').textContent='SONUÇ: '+result;if(result==='HEX'){state.binarySolved=true;render();$('#binaryOutput').textContent='SONUÇ: HEX — İkinci katman hemen aşağıda açıldı.'}};
-$('#decodeHex').onclick=()=>{const groups=$('#hexInput').value.trim().split(/\s+/);if(!groups.length||groups.some(x=>!/^[0-9A-Fa-f]{2}$/.test(x))){$('#hexOutput').innerHTML='<span class="danger">Her grup iki Hex karakteri içermeli.</span>';return}const result=groups.map(x=>String.fromCharCode(parseInt(x,16))).join('');$('#hexOutput').textContent='SONUÇ: '+result;if(result==='KAPI'){state.m2=true;changeTrust(8);if(changeTrace(8))return;activistRelief();$('#m2feedback').textContent='KOD ZİNCİRİ ÇÖZÜLDÜ — Sonraki göreve geçiliyor.';render();setTimeout(()=>show('mission3','null://gorev/03'),900)}else{if(changeTrace(10))return;$('#hexOutput').innerHTML='<span class="danger">Sonuç doğru anahtar değil.</span>'}};
-$$('.log').forEach(b=>b.onclick=()=>{if(b.dataset.correct==='1'){state.m3=true;changeTrust(8);if(changeTrace(10))return;activistRelief();$('#m3feedback').textContent='DOĞRU KAYIT — Kopuk hat bulundu.';$$('.log').forEach(x=>x.disabled=true);render();setTimeout(()=>show('mission4','null://gorev/04'),900)}else{b.disabled=true;if(state.role==='Coğrafyacı Ömer'&&!state.perkUsed){state.perkUsed=true;render();$('#perkNotice').textContent='🧭 KESTİRME ROTA! Ömer yanlış yolu haritadan sildi. İz seviyesi artmadı.';$('#perkNotice').classList.remove('hidden');setTimeout(()=>$('#perkNotice').classList.add('hidden'),4500);$('#m3feedback').textContent='Yanlış rota elendi. Özel yetenek kullanıldı.';return}if(changeTrace(20))return;$('#m3feedback').innerHTML='<span class="danger">Yanlış kayıt. Güvenlik taraması başladı.</span>'}});
-const cableLevels=[
-  {start:[0,2],end:[5,3],blocks:['1,1','2,1','3,1','3,2','1,4','2,4','4,4']},
-  {start:[0,0],end:[5,5],blocks:['1,0','1,1','2,1','3,1','4,2','4,3','2,3','2,4','0,4','4,5']},
-  {start:[5,0],end:[0,5],blocks:['4,0','4,1','3,1','2,2','2,3','4,3','4,4','1,3','0,3','1,5','2,5']}
-];
-function currentCable(){return cableLevels[state.cableLevel-1]||cableLevels[0]}
-function resetCurrentCable(){const [x,y]=currentCable().start;state.cableX=x;state.cableY=y;state.cablePath=[[x,y]]}
-function drawCable(){
-  const level=currentCable(),blocks=new Set(level.blocks),canvas=$('#cableCanvas'),ctx=canvas.getContext('2d'),cell=canvas.width/6;
-  $('#cableLevelText').textContent='SEVİYE '+state.cableLevel+' / 3';for(let i=1;i<=3;i++){$('#levelDot'+i).classList.toggle('done',i<state.cableLevel);$('#levelDot'+i).classList.toggle('active',i===state.cableLevel)}
-  ctx.clearRect(0,0,canvas.width,canvas.height);ctx.strokeStyle='#12351f';ctx.lineWidth=2;
-  for(let i=0;i<=6;i++){ctx.beginPath();ctx.moveTo(i*cell,0);ctx.lineTo(i*cell,canvas.height);ctx.stroke();ctx.beginPath();ctx.moveTo(0,i*cell);ctx.lineTo(canvas.width,i*cell);ctx.stroke()}
-  ctx.fillStyle='#8f252d';blocks.forEach(key=>{const [x,y]=key.split(',').map(Number);ctx.fillRect(x*cell+12,y*cell+12,cell-24,cell-24)});
-  ctx.fillStyle='#ffc857';ctx.beginPath();ctx.arc((level.end[0]+.5)*cell,(level.end[1]+.5)*cell,25,0,Math.PI*2);ctx.fill();
-  const path=state.cablePath||[level.start];ctx.strokeStyle='#62ff96';ctx.lineWidth=16;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();path.forEach(([x,y],i)=>{const px=(x+.5)*cell,py=(y+.5)*cell;i?ctx.lineTo(px,py):ctx.moveTo(px,py)});ctx.stroke();
-  ctx.fillStyle='#62ff96';ctx.beginPath();ctx.arc((state.cableX+.5)*cell,(state.cableY+.5)*cell,20,0,Math.PI*2);ctx.fill();
-}
-function moveCable(direction){
-  if(state.m4||$('#mission4').classList.contains('hidden'))return;
-  const level=currentCable(),blocks=new Set(level.blocks),delta={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[direction],nx=state.cableX+delta[0],ny=state.cableY+delta[1];
-  if(nx<0||nx>5||ny<0||ny>5||blocks.has(nx+','+ny)){if(changeTrace(5))return;$('#m4feedback').innerHTML='<span class="danger">Kablo kırmızı devreye çarptı. İz +5.</span>';drawCable();return}
-  state.cableX=nx;state.cableY=ny;state.cablePath.push([nx,ny]);render();drawCable();
-  if(nx===level.end[0]&&ny===level.end[1]){if(state.cableLevel<3){const finished=state.cableLevel;state.cableLevel++;resetCurrentCable();changeTrust(2);$('#m4feedback').textContent='SEVİYE '+finished+' TAMAMLANDI — Yeni hat yüklendi.';render();drawCable()}else{state.m4=true;changeTrust(8);if(changeTrace(5))return;activistRelief();$('#m4feedback').textContent='ÜÇ HAT DA BAĞLANDI — Soğuk arşive geçiliyor.';render();setTimeout(()=>show('mission5','null://gorev/05'),900)}}
-}
-$$('[data-move]').forEach(b=>b.onclick=()=>moveCable(b.dataset.move));
-$('#resetCable').onclick=()=>{resetCurrentCable();$('#m4feedback').textContent='Bu seviyedeki kablo başlangıç noktasına döndü.';render();drawCable()};
-window.addEventListener('keydown',e=>{const direction={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}[e.key];if(direction&&!$('#mission4').classList.contains('hidden')){e.preventDefault();moveCable(direction)}});
-let touchStart=null;$('#cableCanvas').addEventListener('touchstart',e=>{e.preventDefault();const t=e.changedTouches[0];touchStart=[t.clientX,t.clientY]},{passive:false});$('#cableCanvas').addEventListener('touchend',e=>{e.preventDefault();if(!touchStart)return;const t=e.changedTouches[0],dx=t.clientX-touchStart[0],dy=t.clientY-touchStart[1];touchStart=null;if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;moveCable(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'))},{passive:false});
-$$('.file').forEach(b=>b.onclick=()=>{if(b.dataset.file==='right'){state.m5=true;changeTrust(10);if(changeTrace(10))return;activistRelief();render();show('finalChoice','null://nightfall/karar')}else{b.disabled=true;if(changeTrace(25))return;$('#m5feedback').innerHTML='<span class="danger">Sahte dosya. Alarm yükseldi.</span>'}});
-$('#publish').onclick=()=>finish('GERÇEK ORTAYA ÇIKTI','NIGHTFALL listesini güvenli biçimde yayımladın.<br><br>'+endingFor('publish')+'<br><br>SON: Muhbir','null://son/gercek');
-$('#sendGhost').onclick=()=>state.trust>=65?finish('GİZLİ SON','ghost_17 gerçek kimliğini açıkladı ve dosyayı teslim aldı.<br><br>'+endingFor('ghost')+'<br><br>SON: Gölgedeki Müttefik','null://son/gizli'):finish('İHANET','ghost_17 dosyayı aldı ve seni sistemde yalnız bıraktı.<br><br>'+endingFor('betray')+'<br><br>SON: Satılmış Kimlik','null://son/ihanet');
-$('#erase').onclick=()=>finish('SESSİZ ÇIKIŞ','Dosyayı sildin ve bağlantıyı kapattın.<br><br>'+endingFor('erase')+'<br><br>SON: Sessizlik','null://son/sessizlik');
-if(localStorage.getItem('nullGameV5'))$('#continue').classList.remove('hidden');
-</script>
+
+    <main>
+      <section id="setupScreen" class="setup-screen">
+        <div class="setup-intro">
+          <span class="eyebrow">KURGUSAL TERMİNAL MACERASI</span>
+          <h1>Kimliğini seç.<br><em>Ağa bağlan.</em></h1>
+          <p>NIGHTFALL dosyasına ulaşmak için beş güvenlik katmanını aş. Seçimlerin iz seviyeni, güvenini ve finalini değiştirecek.</p>
+
+          <label class="field-label" for="aliasInput">TAKMA AD</label>
+          <input id="aliasInput" class="text-input" maxlength="16" autocomplete="off" placeholder="Örn. Raven">
+
+          <div class="setup-actions">
+            <button id="startButton" class="primary-button" type="button" disabled>AĞA BAĞLAN <span>→</span></button>
+            <button id="continueButton" class="secondary-button hidden" type="button">KAYITLI OTURUMA DEVAM ET</button>
+          </div>
+        </div>
+
+        <div class="character-section">
+          <div class="section-heading"><div><span class="eyebrow">OPERATÖR DOSYALARI</span><h2>Karakterini seç</h2></div><span id="characterCount" class="count-badge"></span></div>
+          <div id="characterGrid" class="character-grid" role="radiogroup" aria-label="Karakter seçimi"></div>
+          <div id="selectedCharacter" class="selected-character" aria-live="polite">
+            <span class="selected-icon">?</span><div><small>SEÇİM BEKLENİYOR</small><strong>Bir operatör seç</strong><p>Her karakterin oynanışı etkileyen farklı bir yeteneği vardır.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="game-layout hidden">
+        <aside class="progress-panel" aria-label="Görev ilerlemesi">
+          <div class="panel-label">OPERASYON</div>
+          <h2>NIGHTFALL</h2>
+          <p id="abilitySummary" class="ability-summary"></p>
+          <ol id="missionProgress" class="mission-progress"></ol>
+          <button id="restartButton" class="text-button" type="button">Oturumu sıfırla</button>
+        </aside>
+
+        <section id="missionPanel" class="mission-panel" tabindex="-1">
+          <div class="mission-heading">
+            <div><span id="missionKicker" class="eyebrow">GÖREV 01</span><h1 id="missionTitle">Gölgede Üç Adım</h1></div>
+            <span id="missionStatus" class="status-chip">AKTİF</span>
+          </div>
+          <p id="missionDescription" class="mission-description"></p>
+          <div id="storyBox" class="story-box"></div>
+          <div id="missionContent" class="mission-content"></div>
+          <div id="missionFeedback" class="feedback hidden" aria-live="polite"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <nav id="mobileNav" class="mobile-nav hidden" aria-label="Mobil oyun navigasyonu">
+    <button data-mobile-action="mission" class="active"><span>⌁</span>Görev</button>
+    <button data-mobile-action="status"><span>◫</span>Durum</button>
+    <button data-mobile-action="settings"><span>⚙</span>Ayarlar</button>
+  </nav>
+
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <dialog id="statusDialog" class="modal">
+    <div class="modal-header"><div><span class="eyebrow">OPERASYON DURUMU</span><h2>İlerleme</h2></div><button class="icon-button" data-close-dialog="statusDialog" aria-label="Kapat">×</button></div>
+    <div id="mobileStatusContent"></div>
+  </dialog>
+
+  <dialog id="settingsDialog" class="modal">
+    <div class="modal-header"><div><span class="eyebrow">SİSTEM</span><h2>Ayarlar</h2></div><button class="icon-button" data-close-dialog="settingsDialog" aria-label="Kapat">×</button></div>
+    <label class="setting-row"><span><strong>Terminal sesleri</strong><small>Başarı ve hata seslerini açar.</small></span><input id="soundToggle" type="checkbox"></label>
+    <label class="setting-row"><span><strong>Azaltılmış hareket</strong><small>Animasyonları ve ekran efektlerini azaltır.</small></span><input id="motionToggle" type="checkbox"></label>
+  </dialog>
+
+  <dialog id="confirmDialog" class="modal confirm-modal">
+    <div class="modal-header"><div><span class="eyebrow">ONAY</span><h2>Oturum sıfırlansın mı?</h2></div></div>
+    <p>Mevcut ilerleme silinecek ve karakter seçimine dönülecek.</p>
+    <div class="modal-actions"><button id="cancelRestart" class="secondary-button">VAZGEÇ</button><button id="confirmRestart" class="danger-button">SIFIRLA</button></div>
+  </dialog>
 </body>
 </html>
